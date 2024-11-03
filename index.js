@@ -254,25 +254,54 @@ bot.callbackQuery("optima_button_output", async (ctx) => {
   // console.log(session);
 });
 
-bot.callbackQuery("accept", async (ctx) => {
-    const session = getSession(ctx.from.id);
-    if(session.isRefill&&session.waitAnswer){
-    bot.api.sendMessage(ctx.from.id, "Транзакция прошла✅");
-    session.isRefill = false;
-    session.waitAnswer = false;
-    clearSession(ctx.from.id);
+// bot.callbackQuery("accept", async (ctx) => {
+//     const session = getSession(ctx.from.id);
+//     if(session.isRefill&&session.waitAnswer){
+//     bot.api.sendMessage(ctx.from.id, "Транзакция прошла✅");
+//     session.isRefill = false;
+//     session.waitAnswer = false;
+//     clearSession(ctx.from.id);
+//   }
+// });
+// bot.callbackQuery("reject", async (ctx) => {
+//   const session = getSession(ctx.from.id);
+//   if(session.isRefill&&session.waitAnswer){
+//   bot.api.sendMessage(ctx.from.id, "Транзакция отклонена❌");
+//   session.isRefill = false;
+//   session.waitAnswer = false;
+//   clearSession(ctx.from.id);
+// }
+// });
+bot.on("callback_query:data", async (ctx) => {
+  const callbackData = ctx.callbackQuery.data;
+  const [action, userId] = callbackData.split("_");  // Разделяем действие и ID пользователя
+  let userIdToNumber;
+  // console.log(session);
+  if (!isNaN(Number(userId))) {
+    userIdToNumber = parseInt(userId);
+    // console.log("parse to int = ", typeof textToNumber);
+  }
+  const session = getSession(userIdToNumber);
+  // console.log(userIdToNumber);
+  // console.log(session);
+  if (typeof userIdToNumber === "number"){
+    if(session.isRefill && session.waitAnswer){
+      if (action === "accept") {
+        await bot.api.sendMessage(userId, "Транзакция прошла✅");
+      } else if (action === "reject") {
+        await bot.api.sendMessage(userId, "Транзакция отклонена❌");
+      }
+      await ctx.editMessageReplyMarkup({
+        reply_markup: null,  // Очищаем клавиатуру
+      });
+      session.isRefill = false;
+      session.waitAnswer = false;
+      clearSession(userIdToNumber);
+    }
+  }else{
+    console.log('userId is not number = ', userIdToNumber)
   }
 });
-bot.callbackQuery("reject", async (ctx) => {
-  const session = getSession(ctx.from.id);
-  if(session.isRefill&&session.waitAnswer){
-  bot.api.sendMessage(ctx.from.id, "Транзакция отклонена❌");
-  session.isRefill = false;
-  session.waitAnswer = false;
-  clearSession(ctx.from.id);
-}
-});
-
 bot.on(":photo", async (ctx) => {
   const session = getSession(ctx.from.id);
   const userInfo = ctx.from;
@@ -292,8 +321,8 @@ bot.on(":photo", async (ctx) => {
     // Отправляем фотографию в другую группу
 
     const acceptRejectKeyboard = new InlineKeyboard()
-      .text("Принять", "accept")
-      .text("Отклонить", "reject");
+    .text("Принять", `accept_${ctx.from.id}`)
+    .text("Отклонить", `reject_${ctx.from.id}`);
 
       session.waitCheck = false;
       session.waitAnswer = true;
