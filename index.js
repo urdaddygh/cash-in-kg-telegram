@@ -49,9 +49,9 @@ const reffilGroupId = "-4585714579";
 const infoChannelId = "-1002423805369";
 const infoChannelLink = "https://t.me/+-teTVFuSGPg3NTEy";
 
-let mbankRequisites = '-----------';
-let optimaRequisites = '----------';
-let bakaiRequisites = '-----------';
+let mbankRequisites = '0552821082';
+let optimaRequisites = '4169585356834522';
+// let bakaiRequisites = '-----------';
 let shift = 'Не выбран';
 
 const defaultKeyboard = new Keyboard()
@@ -135,25 +135,16 @@ bot.callbackQuery("subscribed", async (ctx) => {
   }
 });
 
-bot.command("edil", async (ctx) => {
-  if (ctx.chat.type === "group") {
-    shift = 'Эдил';
-    mbankRequisites='321321321'
-    optimaRequisites='321321312312'
-    bakaiRequisites='321321321'
-    await ctx.reply("Приветствую Эдил, переключаю на вашу смену");
-  }
-});
 
-bot.command("daniyar", async (ctx) => {
-  if (ctx.chat.type === "group") {
-    shift = 'Данияр';
-    mbankRequisites='504061111'
-    optimaRequisites='4169585351289654'
-    bakaiRequisites='7760611111'
-    await ctx.reply("Приветствую Данияр, переключаю на вашу смену");
-  }
-});
+// bot.command("daniyar", async (ctx) => {
+//   if (ctx.chat.type === "group") {
+//     shift = 'Данияр';
+//     mbankRequisites='504061111'
+//     optimaRequisites='4169585351289654'
+//     bakaiRequisites='7760611111'
+//     await ctx.reply("Приветствую Данияр, переключаю на вашу смену");
+//   }
+// });
 
 // bot.command("test", async (ctx) => {
 //   console.log(ctx)
@@ -180,7 +171,7 @@ bot.hears("ПОПОЛНИТЬ", async (ctx) => {
   // console.log("after", session);
   const inlineKeyboard = new InlineKeyboard()
     .text("MBANK", "mbank_button")
-    .text("Bakai", "bakai_button")
+    // .text("Bakai", "bakai_button")
     .text("Optima", "optima_button");
 
   session.isRefill = true;
@@ -197,13 +188,13 @@ bot.callbackQuery("mbank_button", async (ctx) => {
     session.bank = 'MBANK';
     await ctx.deleteMessage();
 });
-bot.callbackQuery("bakai_button", async (ctx) => {
-  const session = getSession(ctx.from.id);
-    await ctx.reply("Вы выбрали Bakai, укажите сумму пополнения(СОМ)");
-    session.isBankChosen = true;
-    session.bank = 'Bakai';
-    await ctx.deleteMessage();
-});
+// bot.callbackQuery("bakai_button", async (ctx) => {
+//   const session = getSession(ctx.from.id);
+//     await ctx.reply("Вы выбрали Bakai, укажите сумму пополнения(СОМ)");
+//     session.isBankChosen = true;
+//     session.bank = 'Bakai';
+//     await ctx.deleteMessage();
+// });
 bot.callbackQuery("optima_button", async (ctx) => {
   const session = getSession(ctx.from.id);
     await ctx.reply("Вы выбрали Optima, укажите сумму пополнения(СОМ)");
@@ -223,7 +214,7 @@ bot.hears("ВЫВЕСТИ", async (ctx) => {
 
   const inlineKeyboard = new InlineKeyboard()
     .text("MBANK", "mbank_button_output")
-    .text("Bakai", "bakai_button_output")
+    // .text("Bakai", "bakai_button_output")
     .text("Optima", "optima_button_output");
     const session = getSession(ctx.from.id);
 
@@ -240,12 +231,12 @@ bot.callbackQuery("mbank_button_output", async (ctx) => {
   session.isBankChosen = true;
   session.bank = 'MBANK';
 });
-bot.callbackQuery("bakai_button_output", async (ctx) => {
-  const session = getSession(ctx.from.id);
-  await ctx.reply("Введите реквизиты для выбранного вами банка:");
-  session.isBankChosen = true;
-  session.bank = 'Bakai';
-});
+// bot.callbackQuery("bakai_button_output", async (ctx) => {
+//   const session = getSession(ctx.from.id);
+//   await ctx.reply("Введите реквизиты для выбранного вами банка:");
+//   session.isBankChosen = true;
+//   session.bank = 'Bakai';
+// });
 bot.callbackQuery("optima_button_output", async (ctx) => {
   const session = getSession(ctx.from.id);
   await ctx.reply("Введите реквизиты для выбранного вами банка:");
@@ -343,7 +334,7 @@ bot.on("msg:text", async (ctx) => {
   const userInfo = ctx.update.message.from;
   const text = ctx.update.message.text;
   let textToNumber;
-  console.log(ctx.chat);
+  // console.log(ctx.chat);
   if (!isNaN(Number(text))) {
     textToNumber = parseInt(text);
     // console.log("parse to int = ", typeof textToNumber);
@@ -401,11 +392,11 @@ bot.on("msg:text", async (ctx) => {
               `Пополните средства на MBANK по нижеуказанному реквизиту👇\nMBANK: ${mbankRequisites}\nСумма: ${session.sumMany}\n\nОтправьте скриншот чека`
             );
           }
-          if (session.bank === "Bakai") {
-            await ctx.reply(
-              `Пополните средства на Bakai по нижеуказанному реквизиту👇\nBakai: ${bakaiRequisites}\nСумма: ${session.sumMany}\n\nОтправьте скриншот чека`
-            );
-          }
+          // if (session.bank === "Bakai") {
+          //   await ctx.reply(
+          //     `Пополните средства на Bakai по нижеуказанному реквизиту👇\nBakai: ${bakaiRequisites}\nСумма: ${session.sumMany}\n\nОтправьте скриншот чека`
+          //   );
+          // }
           if (session.bank === "Optima") {
             await ctx.reply(
               `Пополните средства на Optima по нижеуказанному реквизиту👇\nOptima: ${optimaRequisites}\nСумма: ${session.sumMany}\n\nОтправьте скриншот чека`
